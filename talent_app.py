@@ -1,4 +1,3 @@
-pip install supabase
 
 import streamlit as st
 import pandas as pd
