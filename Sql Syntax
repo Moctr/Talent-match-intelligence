@@ -1,0 +1,148 @@
+-- Clean emp table
+UPDATE emp SET scale_code = TRIM(scale_code) WHERE scale_code IS NOT NULL
+UPDATE emp SET mbti = TRIM(mbti) WHERE mbti IS NOT NULL
+UPDATE emp SET disc = TRIM(disc) WHERE disc IS NOT NULL
+UPDATE emp SET theme = TRIM(theme) WHERE theme IS NOT NULL
+UPDATE "Papi_TV" SET "TV" = TRIM("TV"), "Code" = TRIM("Code") WHERE "TV" IS NOT NULL
+
+
+--Indexes
+
+CREATE INDEX IF NOT EXISTS idx_emp_cognitive_tv ON emp_cognitive(tv);
+CREATE INDEX IF NOT EXISTS idx_emp_cognitive_employee ON emp_cognitive(employee_id);
+CREATE INDEX IF NOT EXISTS idx_benchmarks_ids ON talent_benchmarks USING gin(selected_talent_ids);
+
+--First CTE: Base Line
+
+SQL :
+--- first try cte 1
+WITH benchmark_baseline AS (
+    SELECT
+        b.job_vacancy_id,
+        e.tv,
+        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY e.score) 
+            AS baseline_score
+    FROM talent_benchmarks b
+    JOIN emp_cognitive e 
+        ON e.employee_id = ANY(b.selected_talent_ids)
+    GROUP BY b.job_vacancy_id, e.tv
+)
+SELECT * FROM benchmark_baseline
+
+
+
+
+--Second CTE: Weighted Aggregation
+-- Create function to process one vacancy at a time
+CREATE OR REPLACE FUNCTION get_matches_for_vacancy(vacancy_id INT)
+RETURNS TABLE(employee_id TEXT, job_vacancy_id INT, tv TEXT, match_rate FLOAT) AS $$
+WITH benchmark_baseline AS (
+    SELECT
+        e.tv,
+        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY e.score) AS baseline_score
+    FROM talent_benchmarks b
+    JOIN emp_cognitive e ON e.employee_id = ANY(b.selected_talent_ids)
+    WHERE b.job_vacancy_id = vacancy_id
+    AND e.tv IS NOT NULL AND e.score IS NOT NULL
+    GROUP BY e.tv
+),
+employee_scores AS (
+    -- Get unique employee-TV scores
+    SELECT DISTINCT employee_id, tv, AVG(score) as avg_score
+    FROM emp_cognitive 
+    WHERE score IS NOT NULL
+    GROUP BY employee_id, tv
+),
+tv_match_rate AS (
+    SELECT
+        es.employee_id,
+        vacancy_id as job_vacancy_id,
+        es.tv,
+        (es.avg_score / bb.baseline_score) * 100 AS match_rate
+    FROM employee_scores es
+    JOIN benchmark_baseline bb ON es.tv = bb.tv
+)
+SELECT * FROM tv_match_rate;
+$$ LANGUAGE SQL;
+
+-- Get matches for vacancy 1
+SELECT * FROM get_matches_for_vacancy(1);
+
+
+
+
+
+
+--Third CTE: Group-level aggregation
+
+--CREATE OR REPLACE FUNCTION get_tgv_matches_for_vacancy(vacancy_id INT)
+RETURNS TABLE(employee_id TEXT, job_vacancy_id INT, tgv_name TEXT, tgv_match_rate FLOAT) AS $$
+WITH tv_matches AS (
+    SELECT * FROM get_matches_for_vacancy(vacancy_id)
+),
+tgv_matches AS (
+    SELECT 
+        tm.employee_id,
+        tm.job_vacancy_id,
+        -- For now, use TV as TGV (simple grouping)
+        tm.tv as tgv_name,
+        -- Equal weighting since we don't have weights table
+        AVG(tm.match_rate) as tgv_match_rate
+    FROM tv_matches tm
+    GROUP BY tm.employee_id, tm.job_vacancy_id, tm.tv
+)
+SELECT * FROM tgv_matches;
+$$ LANGUAGE SQL;
+
+select * from get_tgv_matches_for_vacancy(1)
+
+
+
+
+
+Final CTE: combined all results
+
+SQL:
+
+---final step --
+CREATE OR REPLACE FUNCTION get_final_matches_for_vacancy(vacancy_id INT)
+RETURNS TABLE(
+    employee_id TEXT, directorate TEXT, role TEXT, grade TEXT,
+    tv_name TEXT, baseline_score FLOAT, user_score FLOAT, 
+    tv_match_rate FLOAT, tgv_match_rate FLOAT, final_match_rate FLOAT
+) AS $$
+WITH tv_matches AS (
+    SELECT * FROM get_matches_for_vacancy(vacancy_id)
+),
+employee_info AS (
+    SELECT 
+        e.employee_id,
+        e.fullname,
+        d.name as directorate,
+        p.name as role,
+        g.name as grade
+    FROM employees e
+    LEFT JOIN dim_directorates d ON e.directorate_id = d.directorate_id
+    LEFT JOIN dim_positions p ON e.position_id = p.position_id
+    LEFT JOIN dim_grades g ON e.grade_id = g.grade_id
+),
+final_matches AS (
+    SELECT
+        ei.employee_id,
+        ei.directorate,
+        ei.role,
+        ei.grade,
+        tm.tv as tv_name,
+        0 as baseline_score,
+        0 as user_score,
+        tm.match_rate as tv_match_rate,
+        tm.match_rate as tgv_match_rate,
+        AVG(tm.match_rate) OVER (PARTITION BY tm.employee_id) as final_match_rate
+    FROM tv_matches tm
+    JOIN employee_info ei ON tm.employee_id = ei.employee_id
+)
+SELECT * FROM final_matches;
+$$ LANGUAGE SQL
+
+
+
