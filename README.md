@@ -1,6 +1,5 @@
 # Talent-match-intelligence
 
-#  Talent Match Intelligence
 
 **Live App:** [Streamlit App](https://talent-match-intelligence-evbcvhunzj6rnyxhtd3ae3.streamlit.app/)
 
