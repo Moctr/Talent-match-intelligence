@@ -1,12 +1,12 @@
 # Talent-match-intelligence
 
-# 🧠 Talent Match Intelligence
+#  Talent Match Intelligence
 
 **Live App:** [Streamlit App](https://talent-match-intelligence-evbcvhunzj6rnyxhtd3ae3.streamlit.app/)
 
 ---
 
-## 📄 Executive Summary
+##  Executive Summary
 
 The **Talent Match Project** is a data-driven intelligence framework that aligns employee talent profiles with organizational benchmarks to enhance recruitment, learning, and workforce planning decisions.  
 
@@ -16,7 +16,7 @@ The analytical pipeline leverages modular data logic and statistical aggregation
 
 ---
 
-## 🧩 Project Architecture
+## Project Architecture
 
 ### **1. Success Pattern Analysis**
 
@@ -41,7 +41,7 @@ The foundation phase analyzed over **10,000 employees** across multiple data dom
 
 ---
 
-## ⚙️ Step 2: Matching Algorithm
+##  Step 2: Matching Algorithm
 
 The core analytical logic calculates how closely each employee aligns with high-performing benchmarks through three stages:
 
@@ -59,7 +59,7 @@ The core analytical logic calculates how closely each employee aligns with high-
 
 ---
 
-## 💡 Step 3: Interactive App
+##  Step 3: Interactive App
 
 **Live App:** [Talent Match Intelligence](https://talent-match-intelligence-evbcvhunzj6rnyxhtd3ae3.streamlit.app/)
 
@@ -78,7 +78,7 @@ The core analytical logic calculates how closely each employee aligns with high-
 
 ---
 
-## 🧮 Success Formula
+##  Success Formula
 
 The **Talent Success Score** integrates multiple weighted dimensions:
 
@@ -97,7 +97,7 @@ This balanced weighting ensures that no single aspect dominates, reflecting the 
 
 ---
 
-## 🏢 Business Impact
+## Business Impact
 
 | Focus Area | Value Added |
 |-------------|-------------|
@@ -108,7 +108,7 @@ This balanced weighting ensures that no single aspect dominates, reflecting the 
 
 ---
 
-## 🚀 Future Enhancements
+##  Future Enhancements
 
 - Integration of **predictive modeling** for success probability estimation  
 - **Role transition simulation** to forecast career path alignment  
@@ -117,7 +117,7 @@ This balanced weighting ensures that no single aspect dominates, reflecting the 
 
 ---
 
-## 🧾 Conclusion
+##  Conclusion
 
 The **Talent Match Intelligence** project establishes a powerful and scalable foundation for data-driven talent analytics. It translates complex human data into measurable insights that support fair, objective, and strategic workforce decisions.  
 
@@ -126,10 +126,5 @@ By combining psychometric, behavioral, and contextual data into one unified fram
 Future expansions will introduce predictive and prescriptive analytics, elevating the platform from a diagnostic tool to a **strategic decision engine** that drives organizational growth and excellence.
 
 ---
-
-## 📫 Contact
-  
-[Mohamedzakarya735@gmail.com](mailto:Mohamedzakarya735@gmail.com)  
-[GitHub Profile](https://github.com/Moctr)  
 
 
