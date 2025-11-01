@@ -2,3 +2,5 @@ supabase
 streamlit
 pandas
 plotly
+requests
+openai
