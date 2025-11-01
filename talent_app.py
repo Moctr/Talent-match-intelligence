@@ -1,8 +1,9 @@
+pip install supabase
+
 import streamlit as st
 import pandas as pd
 from supabase import create_client
-
-# Initialize Supabase client with YOUR credentials
+ #Initialize Supabase client with YOUR credentials
 client = create_client(
     "https://ridvicextkltazrhmsql.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHZpY2V4dGtsdGF6cmhtc3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMwMTg0NywiZXhwIjoyMDc2ODc3ODQ3fQ.exOpdEPjTGcxjMlJ_1HZKUeFuzKTFsHulmGkl8WgkPo"
