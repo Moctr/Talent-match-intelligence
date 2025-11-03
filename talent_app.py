@@ -115,11 +115,11 @@ We are seeking a talented {job_level} {role_name} to join our dynamic team. This
 
 def main():
     st.set_page_config(page_title="AI Talent Matcher", layout="wide")
-    st.title("🧠 AI-Powered Talent Matching Dashboard")
+    st.title(" AI-Powered Talent Matching Dashboard")
     
     # API Key Information
     with st.sidebar:
-        st.header("🔑 API Setup Instructions")
+        st.header(" API Setup Instructions")
         st.info("""
         **To enable AI features:**
         
@@ -135,12 +135,12 @@ def main():
         """)
         
         if client_openai:
-            st.success("✅ OpenAI API Connected")
+            st.success(" OpenAI API Connected")
         else:
-            st.warning("⚠️ AI Features: Add OpenAI API key to code")
+            st.warning(" AI Features: Add OpenAI API key to code")
     
     # Input Section
-    st.header("🎯 Job Requirements")
+    st.header(" Job Requirements")
     col1, col2 = st.columns(2)
     
     with col1:
@@ -153,7 +153,7 @@ def main():
                            help="Creates comprehensive job description using AI or professional templates")
         
         if st.button("🪄 Generate Job Description", type="secondary") and role_name and job_level:
-            with st.spinner("🤖 Creating professional job description..."):
+            with st.spinner(" Creating professional job description..."):
                 description = generate_ai_job_description(role_name, job_level, industry)
                 role_purpose = st.text_area("Job Description", value=description, height=300)
         else:
@@ -163,7 +163,7 @@ def main():
                                       placeholder="Enter job description or click 'Generate Job Description'")
     
     # Benchmark Selection
-    st.header("⭐ Select Benchmark Employees")
+    st.header(" Select Benchmark Employees")
     
     try:
         employees = client_supabase.table("emp_cognitive").select("employee_id").limit(200).execute()
@@ -184,7 +184,7 @@ def main():
         selected_benchmarks = []
     
     # Generate Matches
-    if st.button("🚀 Generate Talent Matches", type="primary"):
+    if st.button(" Generate Talent Matches", type="primary"):
         if not all([role_name, job_level, role_purpose, selected_benchmarks]):
             st.error("Please fill all required fields and select benchmark employees!")
             return
@@ -200,10 +200,10 @@ def main():
             
             result = client_supabase.table("talent_benchmarks").insert(new_vacancy).execute()
             vacancy_id = result.data[0]['job_vacancy_id']
-            st.success(f"✅ Created Job Vacancy #{vacancy_id}")
+            st.success(f" Created Job Vacancy #{vacancy_id}")
             
             # Get talent matches
-            with st.spinner("🔄 Computing talent matches..."):
+            with st.spinner(" Computing talent matches..."):
                 matches = client_supabase.rpc("get_final_matches_for_vacancy", {"vacancy_id": vacancy_id}).execute()
                 df = pd.DataFrame(matches.data)
             
@@ -214,7 +214,7 @@ def main():
             # Display Results (rest of your existing results display code)
             # ... [include all the visualization code from previous version]
             
-            st.header("🤖 AI-Generated Job Profile")
+            st.header(" AI-Generated Job Profile")
             col1, col2 = st.columns([2, 1])
             
             with col1:
@@ -227,7 +227,7 @@ def main():
                 st.metric("Candidates Analyzed", df['employee_id'].nunique())
             
             # Ranked Talent List
-            st.header("🏆 Ranked Talent List")
+            st.header(" Ranked Talent List")
             ranked_talent = df.groupby('employee_id').agg({
                 'final_match_rate': 'mean',
                 'directorate': 'first',
@@ -247,7 +247,7 @@ def main():
             )
             
             # Show manual insights
-            st.header("💡 Talent Insights")
+            st.header(" Talent Insights")
             top_3 = ranked_talent.head(3)
             insights = f"""
             **Key Observations:**
