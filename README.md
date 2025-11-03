@@ -15,7 +15,7 @@
 
 **3 .AI Tool Open AI API** .
 
-**4 .Streamlit**.
+**4 .Streamlite**.
 
 ---
 
