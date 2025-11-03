@@ -8,6 +8,14 @@
 
 ---
 
+## Tools Used
+**1.Supabase
+**2.jupyter notebook
+**3.AI Tool Open AI API 
+**4.Streamlit
+
+---
+
 ##  Executive Summary
 
 The **Talent Match Project** is a data-driven intelligence framework that aligns employee talent profiles with organizational benchmarks to enhance recruitment, learning, and workforce planning decisions.  
