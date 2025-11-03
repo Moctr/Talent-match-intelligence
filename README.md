@@ -3,6 +3,9 @@
 
 **Live App:** [Streamlit App](https://talent-match-intelligence-evbcvhunzj6rnyxhtd3ae3.streamlit.app/)
 
+![Talent Match Dashboard](https://github.com/Moctr/Talent-match-intelligence/blob/main/talent%20app.gif?raw=true)
+![Talent Match Dashboard](https://github.com/Moctr/Talent-match-intelligence/blob/main/taent%20demo.gif?raw=true)
+
 ---
 
 ##  Executive Summary
