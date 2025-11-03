@@ -9,10 +9,13 @@
 ---
 
 ## Tools Used
-**1.Supabase
-**2.jupyter notebook
-**3.AI Tool Open AI API 
-**4.Streamlit
+**1 .Supabase**.
+
+**2 .jupyter notebook**.
+
+**3 .AI Tool Open AI API** .
+
+**4 .Streamlit**.
 
 ---
 
