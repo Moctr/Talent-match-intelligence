@@ -117,27 +117,6 @@ def main():
     st.set_page_config(page_title="AI Talent Matcher", layout="wide")
     st.title(" AI-Powered Talent Matching Dashboard")
     
-    # API Key Information
-    with st.sidebar:
-        st.header(" API Setup Instructions")
-        st.info("""
-        **To enable AI features:**
-        
-        1. Get OpenAI API key from:
-           https://platform.openai.com/api-keys
-        
-        2. Replace the placeholder in code:
-           - Open `talent_app.py`
-           - Find: `OPENAI_API_KEY = "sk-your-openai-api-key-here"`
-           - Replace with your actual key
-        
-        3. Redeploy the app
-        """)
-        
-        if client_openai:
-            st.success(" OpenAI API Connected")
-        else:
-            st.warning(" AI Features: Add OpenAI API key to code")
     
     # Input Section
     st.header(" Job Requirements")
