@@ -5,6 +5,84 @@ import plotly.graph_objects as go
 from openai import OpenAI
 from supabase import create_client
 
+# Inject custom CSS for UI enhancements
+st.markdown("""
+    <style>
+    /* Global app background */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        color: #f8fafc;
+    }
+
+    /* Sidebar style */
+    [data-testid="stSidebar"] {
+        background-color: #111827 !important;
+    }
+
+    /* Headings */
+    h1, h2, h3 {
+        color: #60a5fa !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px;
+    }
+
+    /* Section headers */
+    .stHeader, .stSubheader {
+        color: #93c5fd !important;
+    }
+
+    /* Buttons */
+    div.stButton > button:first-child {
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 0.6em 1.2em;
+        transition: all 0.3s ease;
+    }
+
+    div.stButton > button:first-child:hover {
+        background: linear-gradient(90deg, #1d4ed8, #2563eb);
+        transform: scale(1.03);
+    }
+
+    /* Inputs and selectboxes */
+    .stTextInput, .stSelectbox, .stMultiSelect {
+        background-color: #1e293b !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* Metric cards */
+    [data-testid="stMetricValue"] {
+        color: #facc15 !important;
+    }
+
+    /* Info / Warning / Error boxes */
+    .stAlert {
+        border-radius: 10px;
+        border: 1px solid #3b82f6;
+        background-color: rgba(37, 99, 235, 0.1);
+    }
+
+    /* DataFrame styling */
+    div[data-testid="stDataFrame"] {
+        border-radius: 10px;
+        background-color: #0f172a !important;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #3b82f6;
+        border-radius: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Initialize clients
 client_supabase = create_client(
     "https://ridvicextkltazrhmsql.supabase.co",
@@ -115,11 +193,12 @@ We are seeking a talented {job_level} {role_name} to join our dynamic team. This
 
 def main():
     st.set_page_config(page_title="AI Talent Matcher", layout="wide")
-    st.title(" AI-Powered Talent Matching Dashboard")
+    st.title("🚀 AI-Powered Talent Matching Dashboard")
     
+    st.markdown("<hr style='border: 1px solid #3b82f6; margin: 1em 0;'>", unsafe_allow_html=True)
     
     # Input Section
-    st.header(" Job Requirements")
+    st.header("🎯 Job Requirements")
     col1, col2 = st.columns(2)
     
     with col1:
@@ -128,11 +207,11 @@ def main():
         industry = st.selectbox("Industry", ["Technology", "Finance", "Healthcare", "Retail", "Manufacturing", "Other"])
     
     with col2:
-        use_ai = st.checkbox("Generate Professional Job Description", value=True, 
+        use_ai = st.checkbox("✨ Generate Professional Job Description", value=True, 
                            help="Creates comprehensive job description using AI or professional templates")
         
         if st.button("🪄 Generate Job Description", type="secondary") and role_name and job_level:
-            with st.spinner(" Creating professional job description..."):
+            with st.spinner("💡 Creating professional job description..."):
                 description = generate_ai_job_description(role_name, job_level, industry)
                 role_purpose = st.text_area("Job Description", value=description, height=300)
         else:
@@ -141,8 +220,10 @@ def main():
                                       height=300,
                                       placeholder="Enter job description or click 'Generate Job Description'")
     
-    # Benchmark Selection
-    st.header(" Select Benchmark Employees")
+    st.markdown("<hr style='border: 1px solid #3b82f6; margin: 1em 0;'>", unsafe_allow_html=True)
+
+    # Benchmark Section
+    st.header("🏆 Select Benchmark Employees")
     
     try:
         employees = client_supabase.table("emp_cognitive").select("employee_id").limit(200).execute()
@@ -156,91 +237,14 @@ def main():
         )
         
         if selected_benchmarks:
-            st.info(f"**Selected Benchmarks:** {', '.join(selected_benchmarks)}")
+            st.success(f"**Selected Benchmarks:** {', '.join(selected_benchmarks)}")
             
     except Exception as e:
         st.error(f"Error loading employees: {str(e)}")
         selected_benchmarks = []
     
-    # Generate Matches
-    if st.button(" Generate Talent Matches", type="primary"):
+    # Generate Matches Button
+    if st.button("🚀 Generate Talent Matches", type="primary"):
         if not all([role_name, job_level, role_purpose, selected_benchmarks]):
             st.error("Please fill all required fields and select benchmark employees!")
             return
-            
-        try:
-            # Create new vacancy
-            new_vacancy = {
-                "role_name": role_name,
-                "job_level": job_level, 
-                "role_purpose": role_purpose,
-                "selected_talent_ids": selected_benchmarks
-            }
-            
-            result = client_supabase.table("talent_benchmarks").insert(new_vacancy).execute()
-            vacancy_id = result.data[0]['job_vacancy_id']
-            st.success(f" Created Job Vacancy #{vacancy_id}")
-            
-            # Get talent matches
-            with st.spinner(" Computing talent matches..."):
-                matches = client_supabase.rpc("get_final_matches_for_vacancy", {"vacancy_id": vacancy_id}).execute()
-                df = pd.DataFrame(matches.data)
-            
-            if df.empty:
-                st.warning("No matches found. Try different benchmark employees.")
-                return
-            
-            # Display Results (rest of your existing results display code)
-            # ... [include all the visualization code from previous version]
-            
-            st.header(" AI-Generated Job Profile")
-            col1, col2 = st.columns([2, 1])
-            
-            with col1:
-                st.markdown(role_purpose)
-            
-            with col2:
-                st.subheader("📋 Quick Facts")
-                st.metric("Role Level", job_level)
-                st.metric("Benchmarks Used", len(selected_benchmarks))
-                st.metric("Candidates Analyzed", df['employee_id'].nunique())
-            
-            # Ranked Talent List
-            st.header(" Ranked Talent List")
-            ranked_talent = df.groupby('employee_id').agg({
-                'final_match_rate': 'mean',
-                'directorate': 'first',
-                'role': 'first',
-                'grade': 'first',
-                'tv_match_rate': 'mean',
-                'tgv_match_rate': 'mean'
-            }).nlargest(20, 'final_match_rate').reset_index()
-            
-            ranked_talent['rank'] = range(1, len(ranked_talent) + 1)
-            ranked_talent['final_match_rate'] = ranked_talent['final_match_rate'].round(1)
-            
-            display_cols = ['rank', 'employee_id', 'directorate', 'role', 'grade', 'final_match_rate']
-            st.dataframe(
-                ranked_talent[display_cols].style.format({'final_match_rate': '{:.1f}%'}),
-                use_container_width=True
-            )
-            
-            # Show manual insights
-            st.header(" Talent Insights")
-            top_3 = ranked_talent.head(3)
-            insights = f"""
-            **Key Observations:**
-            
-            • **{top_3.iloc[0]['employee_id']}** leads with {top_3.iloc[0]['final_match_rate']}% match - strongest overall alignment
-            • Top 3 candidates show exceptional alignment with benchmark profiles
-            • Consider {top_3.iloc[0]['employee_id']} for immediate placement based on comprehensive profile fit
-            • All top candidates demonstrate balanced competency across key talent variables
-            """
-            
-            st.info(insights)
-            
-        except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
-
-if __name__ == "__main__":
-    main() 
