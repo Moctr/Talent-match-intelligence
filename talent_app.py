@@ -294,20 +294,19 @@ st.markdown("""
 # ---- Initialize Clients ----
 client_supabase = create_client(
     "https://ridvicextkltazrhmsql.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHZpY2V4dGtsdGF6cmhtc3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMwMTg0NywiImV4cCI6MjA3Njg3Nzg0N30Oi5exOpdEPjTGcxjMlJ_1HZKUeFuzKTFsHulmGkl8WgkPo"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHZpY2V4dGtsdGF6cmhtc3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMwMTg0NywiZXhwIjoyMDc2ODc3ODQ3fQ.exOpdEPjTGcxjMlJ_1HZKUeFuzKTFsHulmGkl8WgkPo"
 )
 
 # Initialize OpenAI with placeholder key
 OPENAI_API_KEY = "ssk-proj-aVNhvlj9bUAgYf3vyNeVkNOfIt1vKiMt85BAAz0Up0bZFSkBJK6wX77a1gBwTEM7-mMkIjuJQ0T3BlbkFJA1Px1JKTb7vfcze1xDPB2csB2mTsoz2WMWzbK8QDxjLWUeFo1aOI3gHbTIEhzk7hDPYih6YnoA"
 
 def initialize_openai():
-    """Initialize OpenAI client with the API key"""
     try:
         if OPENAI_API_KEY and OPENAI_API_KEY.startswith("sk-"):
             return OpenAI(api_key=OPENAI_API_KEY)
         else:
             return None
-    except Exception:
+    except:
         return None
 
 client_openai = initialize_openai()
