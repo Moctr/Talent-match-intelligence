@@ -307,7 +307,7 @@ def initialize_openai():
             return OpenAI(api_key=OPENAI_API_KEY)
         else:
             return None
-    except:
+    except Exception:
         return None
 
 client_openai = initialize_openai()
