@@ -1,26 +1,4 @@
-try:
-        employees = client_supabase.table("emp_cognitive").select("employee_id").limit(200).execute()
-        employee_ids = list(set([e['employee_id'] for e in employees.data]))
-        
-        selected_benchmarks = st.multiselect(
-            "Select High Performers", 
-            options=employee_ids,
-            placeholder="Search and select employee IDs...",
-            help="These employees will serve as the baseline for talent matching"
-        )
-        
-        if selected_benchmarks:
-            benchmark_text = ", ".join(selected_benchmarks)
-            st.info(f"Benchmarks Selected: {benchmark_text}")
-            
-    except Exception as e:
-        st.error("Unable to load employee database. Please verify your database credentials and try again.")
-        st.markdown("""
-        <div style='background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 12px; margin-top: 10px;'>
-            <p style='color: #fecaca; font-size: 0.85em; margin: 0;'><strong>Troubleshooting:</strong> Verify your Supabase API credentials and ensure the database connection is active.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        selected_benchmarks = []import streamlit as st
+import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -52,7 +30,6 @@ st.markdown("""
         font-size: 2.25em !important;
         letter-spacing: -0.03em;
         margin-bottom: 0.8em !important;
-        font-weight: 700;
     }
 
     h2 {
@@ -207,12 +184,6 @@ st.markdown("""
         padding: 18px !important;
     }
 
-    /* Error message styling */
-    [data-testid="stAlert"] {
-        border-radius: 8px;
-        padding: 18px !important;
-    }
-
     .stWarning {
         background-color: rgba(245, 158, 11, 0.08) !important;
         border-left: 4px solid #f59e0b !important;
@@ -233,7 +204,6 @@ st.markdown("""
         gap: 1.5rem;
     }
 
-    /* Table styling */
     .dataframe {
         background-color: #1a1f3a !important;
         color: #e8eaf6 !important;
@@ -257,7 +227,6 @@ st.markdown("""
         background-color: rgba(99, 102, 241, 0.05) !important;
     }
 
-    /* Scrollbar styling */
     ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -284,20 +253,17 @@ st.markdown("""
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Section spacing */
     [data-testid="stForm"] {
         background-color: transparent;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# ---- Initialize Clients ----
 client_supabase = create_client(
     "https://ridvicextkltazrhmsql.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpZHZpY2V4dGtsdGF6cmhtc3FsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTMwMTg0NywiZXhwIjoyMDc2ODc3ODQ3fQ.exOpdEPjTGcxjMlJ_1HZKUeFuzKTFsHulmGkl8WgkPo"
 )
 
-# Initialize OpenAI with placeholder key
 OPENAI_API_KEY = "ssk-proj-aVNhvlj9bUAgYf3vyNeVkNOfIt1vKiMt85BAAz0Up0bZFSkBJK6wX77a1gBwTEM7-mMkIjuJQ0T3BlbkFJA1Px1JKTb7vfcze1xDPB2csB2mTsoz2WMWzbK8QDxjLWUeFo1aOI3gHbTIEhzk7hDPYih6YnoA"
 
 def initialize_openai():
@@ -312,7 +278,6 @@ def initialize_openai():
 client_openai = initialize_openai()
 
 def generate_ai_job_description(role_name, job_level, industry="Technology"):
-    """Generate job description using OpenAI"""
     try:
         if not client_openai:
             return get_fallback_description(role_name, job_level)
@@ -359,7 +324,6 @@ def generate_ai_job_description(role_name, job_level, industry="Technology"):
         return get_fallback_description(role_name, job_level)
 
 def get_fallback_description(role_name, job_level):
-    """Provide a professional fallback description when AI is unavailable"""
     return f"""
 **{role_name} - {job_level} Position**
 
@@ -404,7 +368,6 @@ def main():
     st.title("AI-Powered Talent Matching Dashboard")
     st.markdown("<p style='color: #94a3b8; margin-bottom: 2em; font-size: 1em; font-weight: 300;'>Discover and match the best talent for your organizational needs</p>", unsafe_allow_html=True)
     
-    # Input Section
     st.header("Job Requirements")
     col1, col2 = st.columns(2, gap="large")
     
@@ -429,7 +392,6 @@ def main():
                                       height=280,
                                       placeholder="Enter job description or click 'Generate Job Description'")
     
-    # Benchmark Selection
     st.header("Benchmark Selection")
     st.markdown("<p style='color: #94a3b8; margin-bottom: 1.5em; font-size: 0.95em;'>Select high-performing employees to establish success criteria</p>", unsafe_allow_html=True)
     
@@ -449,10 +411,14 @@ def main():
             st.info(f"Benchmarks Selected: {benchmark_text}")
             
     except Exception as e:
-        st.error(f"Error loading employees: {str(e)}")
+        st.error("Unable to load employee database. Please verify your database credentials and try again.")
+        st.markdown("""
+        <div style='background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 12px; margin-top: 10px;'>
+            <p style='color: #fecaca; font-size: 0.85em; margin: 0;'><strong>Troubleshooting:</strong> Verify your Supabase API credentials and ensure the database connection is active.</p>
+        </div>
+        """, unsafe_allow_html=True)
         selected_benchmarks = []
     
-    # Generate Matches
     st.markdown("---")
     col_submit = st.columns([1, 4, 1])
     
@@ -463,7 +429,6 @@ def main():
                 return
                 
             try:
-                # Create new vacancy
                 new_vacancy = {
                     "role_name": role_name,
                     "job_level": job_level, 
@@ -475,7 +440,6 @@ def main():
                 vacancy_id = result.data[0]['job_vacancy_id']
                 st.success(f"Job Vacancy #{vacancy_id} created successfully")
                 
-                # Get talent matches
                 with st.spinner("Computing talent matches..."):
                     matches = client_supabase.rpc("get_final_matches_for_vacancy", {"vacancy_id": vacancy_id}).execute()
                     df = pd.DataFrame(matches.data)
@@ -484,7 +448,6 @@ def main():
                     st.warning("No matching candidates found. Consider adjusting benchmark employees.")
                     return
                 
-                # AI-Generated Job Profile
                 st.header("Job Profile Summary")
                 col1, col2 = st.columns([2.5, 1.5], gap="large")
                 
