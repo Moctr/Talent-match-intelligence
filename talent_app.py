@@ -1,4 +1,26 @@
-import streamlit as st
+try:
+        employees = client_supabase.table("emp_cognitive").select("employee_id").limit(200).execute()
+        employee_ids = list(set([e['employee_id'] for e in employees.data]))
+        
+        selected_benchmarks = st.multiselect(
+            "Select High Performers", 
+            options=employee_ids,
+            placeholder="Search and select employee IDs...",
+            help="These employees will serve as the baseline for talent matching"
+        )
+        
+        if selected_benchmarks:
+            benchmark_text = ", ".join(selected_benchmarks)
+            st.info(f"Benchmarks Selected: {benchmark_text}")
+            
+    except Exception as e:
+        st.error("Unable to load employee database. Please verify your database credentials and try again.")
+        st.markdown("""
+        <div style='background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 12px; margin-top: 10px;'>
+            <p style='color: #fecaca; font-size: 0.85em; margin: 0;'><strong>Troubleshooting:</strong> Verify your Supabase API credentials and ensure the database connection is active.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        selected_benchmarks = []import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -181,6 +203,14 @@ st.markdown("""
     .stError {
         background-color: rgba(239, 68, 68, 0.08) !important;
         border-left: 4px solid #ef4444 !important;
+        border-radius: 8px;
+        padding: 18px !important;
+    }
+
+    /* Error message styling */
+    [data-testid="stAlert"] {
+        border-radius: 8px;
+        padding: 18px !important;
     }
 
     .stWarning {
@@ -519,7 +549,12 @@ def main():
                     st.info(summary_text)
                 
             except Exception as e:
-                st.error(f"Error generating matches: {str(e)}")
+                st.error("Unable to generate talent matches. Please check your database connection and try again.")
+                st.markdown("""
+                <div style='background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 12px; margin-top: 10px;'>
+                    <p style='color: #fecaca; font-size: 0.85em; margin: 0;'><strong>Troubleshooting:</strong> Ensure all database tables and API endpoints are properly configured.</p>
+                </div>
+                """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
