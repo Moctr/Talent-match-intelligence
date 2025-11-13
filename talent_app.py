@@ -5,61 +5,198 @@ import plotly.graph_objects as go
 from openai import OpenAI
 from supabase import create_client
 
-# ---- Simple UI Enhancements (Safe & Modern Look) ----
+# ---- Professional Dark Theme UI ----
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+    
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(180deg, #f9fafb 0%, #eef2ff 100%);
-        color: #111827;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        color: #e2e8f0;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #f1f5f9 !important;
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+        border-right: 1px solid rgba(148, 163, 184, 0.1);
     }
 
-    h1, h2, h3 {
-        color: #1e40af !important;
+    h1 {
+        color: #38bdf8 !important;
         font-weight: 700 !important;
+        font-size: 2.5em !important;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5em !important;
+    }
+
+    h2 {
+        color: #0ea5e9 !important;
+        font-weight: 700 !important;
+        font-size: 1.75em !important;
+        margin-top: 1.5em !important;
+        margin-bottom: 1em !important;
+        border-bottom: 2px solid rgba(14, 165, 233, 0.2);
+        padding-bottom: 0.5em !important;
+    }
+
+    h3 {
+        color: #38bdf8 !important;
+        font-weight: 600 !important;
     }
 
     div.stButton > button:first-child {
-        background: linear-gradient(90deg, #3b82f6, #2563eb);
+        background: linear-gradient(135deg, #0ea5e9, #06b6d4);
         color: white;
         border: none;
         border-radius: 8px;
         font-size: 15px;
         font-weight: 600;
-        padding: 0.5em 1em;
-        transition: all 0.2s ease;
+        padding: 0.75em 1.5em;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     div.stButton > button:first-child:hover {
-        background: linear-gradient(90deg, #2563eb, #1d4ed8);
-        transform: scale(1.02);
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
     }
 
-    .stTextInput, .stSelectbox, .stMultiSelect {
-        background-color: white !important;
-        color: #111827 !important;
-        border-radius: 6px !important;
+    div.stButton > button:first-child:active {
+        transform: translateY(0);
     }
 
-    [data-testid="stMetricValue"] {
-        color: #2563eb !important;
-        font-weight: 700;
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > select,
+    .stMultiSelect > div > div > div {
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
+        border: 1.5px solid rgba(148, 163, 184, 0.2) !important;
+        border-radius: 8px !important;
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease;
     }
 
-    .stAlert {
-        border-radius: 10px;
-        border: 1px solid #3b82f6;
-        background-color: rgba(59,130,246,0.1);
-        color: #1e3a8a;
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > select:focus,
+    .stMultiSelect > div > div > div:focus {
+        border-color: #0ea5e9 !important;
+        background-color: rgba(14, 165, 233, 0.05) !important;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
     }
 
     .stTextArea textarea {
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
+        border: 1.5px solid rgba(148, 163, 184, 0.2) !important;
         border-radius: 8px !important;
-        border: 1px solid #cbd5e1 !important;
-        background-color: white !important;
+        padding: 14px !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease;
+    }
+
+    .stTextArea textarea:focus {
+        border-color: #0ea5e9 !important;
+        background-color: rgba(14, 165, 233, 0.05) !important;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: #38bdf8 !important;
+        font-weight: 700;
+        font-size: 2em !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #cbd5e1 !important;
+        font-weight: 500;
+    }
+
+    .stMetricDelta {
+        color: #10b981 !important;
+    }
+
+    .stAlert {
+        border-radius: 12px;
+        border: 1.5px solid rgba(14, 165, 233, 0.3);
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(6, 182, 212, 0.05)) !important;
+        color: #cffafe;
+        padding: 16px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    div[data-testid="stMarkdownContainer"] {
+        color: #e2e8f0;
+    }
+
+    [data-testid="stDataFrame"] {
+        background-color: #1e293b !important;
+    }
+
+    .stDataFrame {
+        border: 1px solid rgba(148, 163, 184, 0.1) !important;
+        border-radius: 8px !important;
+        overflow: hidden;
+    }
+
+    .stCheckbox > label {
+        color: #cbd5e1 !important;
+        font-weight: 500;
+    }
+
+    .stCheckbox > label > span {
+        color: #0ea5e9 !important;
+    }
+
+    .stInfo {
+        background-color: rgba(14, 165, 233, 0.1) !important;
+        border-left: 4px solid #0ea5e9 !important;
+    }
+
+    .stSuccess {
+        background-color: rgba(16, 185, 129, 0.1) !important;
+        border-left: 4px solid #10b981 !important;
+    }
+
+    .stError {
+        background-color: rgba(239, 68, 68, 0.1) !important;
+        border-left: 4px solid #ef4444 !important;
+    }
+
+    .stWarning {
+        background-color: rgba(245, 158, 11, 0.1) !important;
+        border-left: 4px solid #f59e0b !important;
+    }
+
+    /* Column divider styling */
+    .stColumn {
+        padding: 0 12px;
+    }
+
+    /* Spinner styling */
+    .stSpinner {
+        color: #0ea5e9 !important;
+    }
+
+    /* Sidebar text */
+    .css-1d391kg {
+        color: #cbd5e1 !important;
+    }
+
+    /* Label styling */
+    label {
+        color: #cbd5e1 !important;
+        font-weight: 500 !important;
     }
     </style>
 """, unsafe_allow_html=True)
