@@ -25,7 +25,7 @@ st.markdown("""
     }
 
     h1 {
-        color: #818cf8 !important;
+        color: #e0e7ff !important;
         font-weight: 700 !important;
         font-size: 2.25em !important;
         letter-spacing: -0.03em;
@@ -33,7 +33,7 @@ st.markdown("""
     }
 
     h2 {
-        color: #a5b4fc !important;
+        color: #f3f4f6 !important;
         font-weight: 600 !important;
         font-size: 1.6em !important;
         margin-top: 1.2em !important;
@@ -43,7 +43,7 @@ st.markdown("""
     }
 
     h3 {
-        color: #c7d2fe !important;
+        color: #f0f4f8 !important;
         font-weight: 600 !important;
         font-size: 1.1em !important;
     }
@@ -492,8 +492,21 @@ def main():
                 
                 display_cols = ['rank', 'employee_id', 'directorate', 'role', 'grade', 'final_match_rate']
                 
+                def color_match_rate(val):
+                    if val >= 85:
+                        return 'background-color: rgba(16, 185, 129, 0.3); color: #86efac;'
+                    elif val >= 70:
+                        return 'background-color: rgba(59, 130, 246, 0.3); color: #93c5fd;'
+                    elif val >= 50:
+                        return 'background-color: rgba(245, 158, 11, 0.3); color: #fcd34d;'
+                    else:
+                        return 'background-color: rgba(239, 68, 68, 0.3); color: #fca5a5;'
+                
+                styled_df = ranked_talent[display_cols].style.format({'final_match_rate': '{:.1f}%'})
+                styled_df = styled_df.applymap(lambda v: color_match_rate(v) if isinstance(v, (int, float)) and v > 10 else '', subset=['final_match_rate'])
+                
                 st.dataframe(
-                    ranked_talent[display_cols].style.format({'final_match_rate': '{:.1f}%'}),
+                    styled_df,
                     use_container_width=True,
                     height=500
                 )
