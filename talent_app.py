@@ -494,16 +494,16 @@ def main():
                 
                 def color_match_rate(val):
                     if val >= 85:
-                        return 'background-color: rgba(16, 185, 129, 0.3); color: #86efac;'
+                        return 'background-color: rgba(16, 185, 129, 0.4); color: #10b981; font-weight: 600;'
                     elif val >= 70:
-                        return 'background-color: rgba(59, 130, 246, 0.3); color: #93c5fd;'
+                        return 'background-color: rgba(59, 130, 246, 0.4); color: #3b82f6; font-weight: 600;'
                     elif val >= 50:
-                        return 'background-color: rgba(245, 158, 11, 0.3); color: #fcd34d;'
+                        return 'background-color: rgba(245, 158, 11, 0.4); color: #f59e0b; font-weight: 600;'
                     else:
-                        return 'background-color: rgba(239, 68, 68, 0.3); color: #fca5a5;'
+                        return 'background-color: rgba(239, 68, 68, 0.4); color: #ef4444; font-weight: 600;'
                 
                 styled_df = ranked_talent[display_cols].style.format({'final_match_rate': '{:.1f}%'})
-                styled_df = styled_df.applymap(lambda v: color_match_rate(v) if isinstance(v, (int, float)) and v > 10 else '', subset=['final_match_rate'])
+                styled_df = styled_df.map(lambda v: color_match_rate(v) if isinstance(v, (int, float)) else '', subset=['final_match_rate'])
                 
                 st.dataframe(
                     styled_df,
